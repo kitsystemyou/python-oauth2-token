@@ -3,7 +3,8 @@ sequenceDiagram
 participant c as ブラウザ
 participant s as サーバー
 participant t as Twitter
-    s->>t: リクエストトークンください
+    c->>s: Twitter でのログイン使いたい
+    s->>t: Twitter ログイン使わせたいから<br>リクエストトークンください
     t-->>s: あいよ
     s-->>s: リクエストトークンで認証URL 生成
     s->>c: 認証URLあげるからログインしたまえ

@@ -23,13 +23,13 @@ response_req_text = response_req.text
 
 oauth_token_kvstr = response_req_text.split("&")
 token_dict = {x.split("=")[0]: x.split("=")[1] for x in oauth_token_kvstr}
-print(token_dict)
 oauth_token = token_dict["oauth_token"]
+# 認証URL作成
 auth_url = f"{authenticate_url}?oauth_token={oauth_token}"
 print("認証URL:", auth_url)
 
-error = webbrowser.open(auth_url)
-print("☕ browser error ", error)
+# ブラウザで認証URLを開く(要ブラウザ) または、標準出力に出力される認証URLをブラウザで手動で開く
+webbrowser.open(auth_url)
 # oauth_verifier = input("OAuth Verifierを入力してください> ")
 
 print("start server")
@@ -37,11 +37,9 @@ print("start server")
 
 @get('/')  # redirected url
 def get_token():
-    print("🍌 Redirected")
+    # クエリパラメータから oauth_verifire 取得
     oauth_verifier = request.query.oauth_verifier
-    print("🍎", oauth_token, oauth_verifier)
-
-    # time.sleep(10)
+    # アクセストークンリクエスト
     session_acc = OAuth1Session(
         API_KEY,
         API_KEY_SECRET,
@@ -51,14 +49,13 @@ def get_token():
         access_endpoint_url, params={
             "oauth_verifier": oauth_verifier})
     response_acc_text = response_acc.text
-    print("🍇", response_acc_text)
-    print(response_acc.status_code)
-
+    # レスポンスをパース
     access_token_kvstr = response_acc_text.split("&")
     acc_token_dict = {x.split("=")[0]: x.split("=")[1]
                       for x in access_token_kvstr}
     access_token = acc_token_dict["oauth_token"]
     access_token_secret = acc_token_dict["oauth_token_secret"]
+    print(acc_token_dict)
 
     print("🌟")
     print("Access Token       :", access_token)
