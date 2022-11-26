@@ -1,7 +1,6 @@
 from requests_oauthlib import OAuth1Session
 import webbrowser
 from bottle import run, get, request
-# import time
 
 PORT = 8000
 API_KEY = ""
