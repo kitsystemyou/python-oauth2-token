@@ -4,6 +4,7 @@ import base64
 import re
 import hashlib
 import requests
+import yaml
 
 from bottle import run, get, request, redirect
 from requests.auth import HTTPBasicAuth
@@ -12,6 +13,10 @@ PORT = 8000
 API_KEY = ""
 API_KEY_SECRET = ""
 
+with open('config.yaml') as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+    API_KEY = config['api_key']
+    API_KEY_SECRET = config['api_key_secret']
 
 redirect_url = "http://localhost:8000/oauth2/authorize"
 authorization_base_url = "https://auth.pre.cios.dev/connect/authorize"
