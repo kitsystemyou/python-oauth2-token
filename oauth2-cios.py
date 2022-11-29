@@ -17,7 +17,7 @@ redirect_url = "http://localhost:8000/oauth2/authorize"
 authorization_base_url = "https://auth.pre.cios.dev/connect/authorize"
 access_token_endpoint_url = "https://auth.pre.cios.dev/connect/token"
 
-# 認可リクエスト
+
 scope = ['file_storage.read', 'user.profile', 'corporation.read']
 
 
@@ -44,7 +44,7 @@ def get_token():
     print("request.url: ", request.url)
     print(request.url.replace('http', 'https'))
     url = request.url.replace('http', 'https')
-    authorization_response = url  # ここにリクエストされた URL 全部投げ込む
+    authorization_response = url
 
     token = oauth2_session.fetch_token(
         token_url=token_url,

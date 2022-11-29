@@ -46,7 +46,7 @@ def get_token():
     print("request.url: ", request.url)
     print(request.url.replace('http', 'https'))
     url = request.url.replace('http', 'https')
-    authorization_response = url  # ここにリクエストされた URL 全部投げ込む
+    authorization_response = url
 
     token = twitter.fetch_token(
         token_url=token_url,
