@@ -17,14 +17,13 @@ with open('config.yaml') as f:
     API_KEY = config['api_key']
     API_KEY_SECRET = config['api_key_secret']
 
+# TODO: Add config.yaml
 redirect_url = "http://localhost:8000/oauth2/authorize"
 authorization_base_url = "https://auth.pre.cios.dev/connect/authorize"
-access_token_endpoint_url = "https://auth.pre.cios.dev/connect/token"
-
-
+token_url = "https://auth.pre.cios.dev/connect/token"
 scope = ['file_storage.read', 'user.profile', 'corporation.read', 'corporation.user.read']
 
-
+# NOTE: OPTIONNAL. for PKCE
 code_verifier = base64.urlsafe_b64encode(os.urandom(32)).decode("utf-8")
 code_verifier = re.sub("[^a-zA-Z0-9]+", "", code_verifier)
 code_challenge = hashlib.sha256(code_verifier.encode("utf-8")).digest()
@@ -36,7 +35,6 @@ oauth2_session = OAuth2Session(client_id=API_KEY, scope=scope, redirect_uri=redi
 authorization_url, state = oauth2_session.authorization_url(authorization_base_url, code_challenge=code_challenge, code_challenge_method="S256")
 
 
-token_url = "https://auth.pre.cios.dev/connect/token"
 auth = HTTPBasicAuth(API_KEY, API_KEY_SECRET)
 
 print("start!")
@@ -53,7 +51,7 @@ def get_token():
     print("API_KEY:", API_KEY)
     print("API_KEY_SECRET:", API_KEY_SECRET)
     auth = HTTPBasicAuth(API_KEY, API_KEY_SECRET)
-    url = request.url.replace('http', 'https')
+    url = request.url.replace('http', 'https')  # NOTE: for local
     authorization_response = url
 
     token = oauth2_session.fetch_token(
@@ -66,8 +64,10 @@ def get_token():
     access = token["access_token"]
 
     headers = {
-        "Authorization": "Bearer {}".format(access)
+        "Authorization": f"Bearer {access}"
     }
+    
+    # Get My Profie API
     url = "https://accounts.preapis.cios.dev/v2/me"
     getmyprofile_response = requests.request("GET", url, headers=headers)
     if getmyprofile_response.status_code != 200:
@@ -80,6 +80,7 @@ def get_token():
     corpID = userprofile['corporation']['id']
     userID = userprofile['id']
     
+    # Read Corporation User API
     gcuurl = f"https://accounts.preapis.cios.dev/v2/corporations/{corpID}/users/{userID}"
     getcorporationuser_response = requests.request("GET", gcuurl, headers=headers)
     if getcorporationuser_response.status_code != 200:
