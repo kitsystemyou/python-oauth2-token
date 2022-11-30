@@ -9,16 +9,16 @@ from bottle import run, get, request, redirect
 from requests.auth import HTTPBasicAuth
 
 PORT = 8000
-API_KEY = ""
-API_KEY_SECRET = ""
+API_KEY = "WXRqczNfRGxBbkdIUmd1ZFd4N046MTpjaQ"
+API_KEY_SECRET = "yNEA3Vz7ICuDH_Fm4kRohSO2YrePVnSGuG-tmPSQl7-RmgG6sD"
 
 
 callback_url = "http://localhost:8000/"
-# request_endpoint_url = "https://api.twitter.com/oauth/request_token"
+
 authorization_base_url = "https://twitter.com/i/oauth2/authorize"
 access_token_endpoint_url = "https://api.twitter.com/oauth/access_token"
 
-# 認可リクエスト
+
 scope = ['tweet.read', 'users.read']
 
 

@@ -6,12 +6,11 @@ import hashlib
 import requests
 import yaml
 
-from bottle import run, get, request, redirect
+from bottle import get, request, route, redirect, template, run
 from requests.auth import HTTPBasicAuth
 
 PORT = 8000
-API_KEY = ""
-API_KEY_SECRET = ""
+
 
 with open('config.yaml') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
@@ -41,6 +40,12 @@ token_url = "https://auth.pre.cios.dev/connect/token"
 auth = HTTPBasicAuth(API_KEY, API_KEY_SECRET)
 
 print("start!")
+
+
+@route("/")
+def index():
+    pf = 'CIOS'
+    return template('index', pf=pf)
 
 
 @get('/oauth2/authorize')
@@ -77,16 +82,7 @@ def get_token():
     name = response.json()['name']
     email = response.json()['email']
 
-    print("🌟")
-    return f"""
-        <body>
-            <center>
-            <h1>Authentication Succeed!</h1>
-            <h2> ユーザー名: {name}</h2>
-            <h2> プロフィール(description): {email}</h2>
-            </center>
-        </body>
-        """
+    return template('result', name=name, email=email, token=access)
 
 
 @get('/oauth/connect')
