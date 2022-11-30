@@ -22,7 +22,7 @@ authorization_base_url = "https://auth.pre.cios.dev/connect/authorize"
 access_token_endpoint_url = "https://auth.pre.cios.dev/connect/token"
 
 
-scope = ['file_storage.read', 'user.profile', 'corporation.read']
+scope = ['file_storage.read', 'user.profile', 'corporation.read', 'corporation.user.read']
 
 
 code_verifier = base64.urlsafe_b64encode(os.urandom(32)).decode("utf-8")
@@ -73,16 +73,27 @@ def get_token():
     }
     url = "https://accounts.preapis.cios.dev/v2/me"
     print("headers", headers, "params", params)
-    response = requests.request("GET", url, headers=headers)  # params=params
-    if response.status_code != 200:
+    getmyprofile_response = requests.request("GET", url, headers=headers)
+    if getmyprofile_response.status_code != 200:
         raise Exception(
-            "Request returned an error: {} {}".format(response.status_code, response.text)
+            "Request returned an error: {} {}".format(getmyprofile_response.status_code, getmyprofile_response.text)
         )
-    print(response.json())
-    name = response.json()['name']
-    email = response.json()['email']
+    print(getmyprofile_response.json())
+    userprofile = getmyprofile_response.json()
+    name = userprofile['name']
+    email = userprofile['email']
+    corpID = userprofile['corporation']['id']
+    userID = userprofile['id']
+    
+    gcuurl = f"https://accounts.preapis.cios.dev/v2/corporations/{corpID}/users/{userID}"
+    getcorporationuser_response = requests.request("GET", gcuurl, headers=headers)
+    if getcorporationuser_response.status_code != 200:
+        raise Exception(
+            "Request returned an error: {} {}".format(getcorporationuser_response.status_code, getcorporationuser_response.text)
+        )
+    cuserdata = getcorporationuser_response.json()
 
-    return template('result', name=name, email=email, token=access)
+    return template('result', name=name, email=email, token=access, userprofile=userprofile, cuserdata=cuserdata)
 
 
 @get('/oauth/connect')
