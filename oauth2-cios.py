@@ -50,9 +50,9 @@ def index():
 
 @get('/oauth2/authorize')
 def get_token():
+    print("API_KEY:", API_KEY)
+    print("API_KEY_SECRET:", API_KEY_SECRET)
     auth = HTTPBasicAuth(API_KEY, API_KEY_SECRET)
-    print("request.url: ", request.url)
-    print(request.url.replace('http', 'https'))
     url = request.url.replace('http', 'https')
     authorization_response = url
 
@@ -60,25 +60,20 @@ def get_token():
         token_url=token_url,
         authorization_response=authorization_response,
         auth=auth,
-        client_id=API_KEY,
         include_client_id=True,
         code_verifier=code_verifier,
     )
-    print(token)
     access = token["access_token"]
 
-    params = {"user.fields": "created_at,description"}
     headers = {
         "Authorization": "Bearer {}".format(access)
     }
     url = "https://accounts.preapis.cios.dev/v2/me"
-    print("headers", headers, "params", params)
     getmyprofile_response = requests.request("GET", url, headers=headers)
     if getmyprofile_response.status_code != 200:
         raise Exception(
             "Request returned an error: {} {}".format(getmyprofile_response.status_code, getmyprofile_response.text)
         )
-    print(getmyprofile_response.json())
     userprofile = getmyprofile_response.json()
     name = userprofile['name']
     email = userprofile['email']
