@@ -97,4 +97,4 @@ def request_token():
     return redirect(authorization_url)
 
 
-run(host='localhost', port=PORT, debug=True, reloader=False)
+run(host='0.0.0.0', port=PORT, debug=True, reloader=False)
