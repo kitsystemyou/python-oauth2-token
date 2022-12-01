@@ -15,8 +15,13 @@
       <h2>Res of Read Corporation User</h2>
       {{cuserdata}}
       <h2>Reses of Group Members</h2>
-      {{group_infoes}}
+      <p>Test list</p>
     </center>
+    <ul style="margin-left: auto; margin-right: auto">
+      % for ginfo in group_infoes:
+      <li>{{ ginfo }}</li>
+      % end
+    </ul>
     <p>Access Token ↓</p>
     <p>{{token}}</p>
   </body>

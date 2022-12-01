@@ -21,7 +21,7 @@ with open('config.yaml') as f:
 redirect_url = "http://localhost:8000/oauth2/authorize"
 authorization_base_url = "https://auth.pre.cios.dev/connect/authorize"
 token_url = "https://auth.pre.cios.dev/connect/token"
-scope = ['file_storage.read', 'user.profile', 'corporation.read', 'corporation.user.read']
+scope = ['file_storage.read', 'user.profile', 'corporation.read', 'corporation.user.read', 'group.read']
 
 # NOTE: OPTIONNAL. for PKCE
 code_verifier = base64.urlsafe_b64encode(os.urandom(32)).decode("utf-8")
