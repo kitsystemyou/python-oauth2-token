@@ -40,6 +40,16 @@ auth = HTTPBasicAuth(API_KEY, API_KEY_SECRET)
 print("start!")
 
 
+def get_group_members(headers, groupID):
+    ggmurl = f"https://accounts.preapis.cios.dev/v2/groups/{groupID}/members"
+    ggmres = requests.request("GET", ggmurl, headers=headers)
+    if ggmres.status_code != 200:
+        raise Exception(
+            "Request returned an error: {} {}".format(ggmres.status_code, ggmres.text)
+        )
+    return ggmres.json()
+
+
 @route("/")
 def index():
     pf = 'CIOS'
@@ -79,6 +89,7 @@ def get_token():
     email = userprofile['email']
     corpID = userprofile['corporation']['id']
     userID = userprofile['id']
+    groups = userprofile['groups']
     
     # Read Corporation User API
     gcuurl = f"https://accounts.preapis.cios.dev/v2/corporations/{corpID}/users/{userID}"
@@ -89,7 +100,10 @@ def get_token():
         )
     cuserdata = getcorporationuser_response.json()
 
-    return template('result', name=name, email=email, token=access, userprofile=userprofile, cuserdata=cuserdata)
+    group_info = [get_group_members(headers, x['id']) for x in groups]
+    print(group_info)
+    group_infoes = [g['members'] for g in group_info]
+    return template('result', name=name, email=email, token=access, userprofile=userprofile, cuserdata=cuserdata, group_infoes=group_infoes)
 
 
 @get('/oauth/connect')
